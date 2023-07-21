@@ -1,6 +1,3 @@
-# Instalar y cargar paquetes necesarios (si aún no están instalados)
-# install.packages("tm")
-# install.packages("stringr")
 library(tm)
 library(stringr)
 
@@ -68,5 +65,7 @@ estrategias_militares <- unlist(frases_estrategias)
 estrategias_militares <- unique(estrategias_militares)
 
 # Imprimir la lista de estrategias militares
-cat("Estrategias Militares de Sun Tzu: \n")
-cat(estrategias_militares, sep = "\n" )
+cat("Estrategias Militares de Sun Tzu:\n")
+for (i in seq_along(estrategias_militares)) {
+  cat(i, ". ", estrategias_militares[i], "\n")
+}
