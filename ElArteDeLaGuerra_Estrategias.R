@@ -35,7 +35,7 @@ class(novel.lines.v)
 
 texto_unido <- novel.lines.v
 
-texto_unido <- gsub("[[:punct:]]", " ", texto_unido)
+#texto_unido <- gsub("[[:punct:]]", " ", texto_unido)
 
 # Convertir todas las palabras a minúsculas
 texto_unido <- tolower(texto_unido)
@@ -55,17 +55,28 @@ corpus <- tm_map(corpus, stripWhitespace)
 dtm <- DocumentTermMatrix(corpus)
 
 # Buscar frases que mencionen estrategias militares
-expresion_regular_estrategias <- "([^.!?]*estrategia[^.!?]*)"
+expresion_regular_estrategias <- "([^.!?]*conocer[^.!?]*)"
 frases_estrategias <- str_extract_all(texto_unido, expresion_regular_estrategias)
 
 # Filtrar las frases que mencionen estrategias militares
 estrategias_militares <- unlist(frases_estrategias)
 
-# Eliminar frases duplicadas (opcional)
-estrategias_militares <- unique(estrategias_militares)
+# Instalar y cargar la librería 'crayon' si no está instalada
+if (!requireNamespace("crayon", quietly = TRUE)) {
+  install.packages("crayon")
+}
+library(crayon)
 
-# Imprimir la lista de estrategias militares
-cat("Estrategias Militares de Sun Tzu:\n")
-for (i in seq_along(estrategias_militares)) {
-  cat(i, ". ", estrategias_militares[i], "\n")
+# Obtener el índice de los párrafos que contienen la palabra "estrategia"
+indices_estrategias <- grep(expresion_regular_estrategias, texto_unido)
+
+# Imprimir cada párrafo que contiene la palabra "estrategia" resaltada en azul
+cat("Párrafos que mencionan 'estrategia':\n")
+for (i in seq_along(indices_estrategias)) {
+  start_index <- indices_estrategias[i]
+  end_index <- ifelse(i < length(indices_estrategias), indices_estrategias[i + 1] - 1, length(texto_unido))
+  parrafo <- paste(texto_unido[start_index:end_index], collapse=" ")
+  # Resaltar la palabra "estrategia" en azul
+  parrafo_resaltado <- gsub("conocer", crayon::blue("conocer"), parrafo, ignore.case = TRUE)
+  cat(i, ". ", parrafo_resaltado, "\n\n")
 }
