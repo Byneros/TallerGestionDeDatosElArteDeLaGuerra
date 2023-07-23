@@ -1,17 +1,28 @@
-library(tm)
-library(stringr)
+
+library(ggplot2)
+library(wordcloud2)
 
 #Mirar cual es el folder de trabajo actual y asegurarse que en el est? el documento de la obra
 getwd()
 
+# Comprobar si el archivo de la obra está presente en el directorio
+nombre_archivo <- "nombre_del_archivo_de_la_obra.txt"  # Reemplaza esto con el nombre real del archivo de la obra
+
+archivos_en_directorio <- list.files()
+if (nombre_archivo %in% archivos_en_directorio) {
+  mensaje <- paste("El archivo", nombre_archivo, "se encuentra en el directorio.")
+} else {
+  mensaje <- paste("El archivo", nombre_archivo, "NO se encuentra en el directorio.")
+}
+print(mensaje)
 #Lee el texto desde el archivo "El Arte De La Guerra Sun Tzu.txt" y lo coloca en un vector
 text.v <- scan("El Arte De La Guerra Sun Tzu.txt", what="character", sep="\n")
 
-# Guarda lal?nea del texto en donde inicia la obra en start.v
-start.v <- which(text.v == "/CAPITULO I")
+# Guarda la linea del texto en donde inicia la obra en start.v
+start.v <- which(text.v == "/CAPITULO I.")
 start.v
 
-# Guarda la linea del texto en donde finaliza la obra en start.v
+# Guarda la linea del texto en donde finaliza la obra en end.v
 end.v <- which(text.v == "FIN")
 end.v
 
@@ -26,131 +37,95 @@ end.metadata.v
 metadata.v <- c(start.metadata.v, end.metadata.v)
 metadata.v
 
+# Ahora, las lineas de la novela son las que se encuentra entre la linea de inicio (start.v) y la de fin de la obra (end.v)
+# Colocaremos estas lineas en la variable (obra.lines.v)
+obra.lines.v <-  text.v[start.v:end.v]
 
-# Ahora, las lineas de la novela son las que se encuentra entre la l?nea de inicio (start.v) y la de fin de la obra (end.v)
-# Colocaremos est?s l?neas en la variable (novel.lines.v)
-novel.lines.v <-  text.v[start.v:end.v]
-novel.lines.v
+# Combine todas las líneas de la novela en una sola línea sin separador
+obra.v <- paste(obra.lines.v, collapse = "")
 
+# Agregue saltos de línea después de cada punto en el texto de la novela
+obra.v <- gsub("\\.", ".\n", obra.v)
 
-# Combine all the lines of the novel into a single line with no separator
-novel.v <- paste(novel.lines.v, collapse = "")
-novel.lines.v
-##
-# Add line breaks after each period in the novel text
-novel.v <- gsub("\\.", ".\n", novel.v)
+# Agregue saltos de línea después de cada Capitulo  en el texto de la novela
+obra.v <- gsub("\\.", ".\n", obra.v)
 
 # Divida el texto de la novela en frases usando saltos de línea como separador
 phrases <- strsplit(novel.v, "\n")[[1]]
 
-# Imprime cada frase capturada entre los saltos de línea
-for (phrase in phrases) {
-  cat(phrase, "\n\n")
-}
-
-# Imprimir cada frase capturada entre los saltos de línea que contenga la palabra "conocer"
-cat("Frases que contienen la palabra 'conocer':\n")
-for (phrase in phrases) {
-  if (grepl("\\bconocer\\b", phrase, ignore.case = TRUE)) {
-    cat(phrase, "\n\n")
-  }
-}
-
-
-
-######
-
-
-
-
-# Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en novel.lines.v
-cap.posicion.v <- grep("CAPITULO", novel.lines.v)
+# Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en obra.lines.v
+cap.posicion.v <- grep("CAPITULO", obra.lines.v)
 cap.posicion.v
 
-# Extraer las líneas de novel.lines.v que contienen el patrón "CAPITULO \\d" usando las posiciones encontradas
-novel.lines.v[cap.posicion.v]
+# Extraer las líneas de obra.lines.v que contienen el patrón "CAPITULO \\d" usando las posiciones encontradas
+obra.lines.v[cap.posicion.v]
 
-# Agregar la etiqueta "END" al final de novel.lines.v
-novel.lines.v<-c(novel.lines.v,"END")
+# Agregar la etiqueta "END" al final de obra.lines.v
+obra.lines.v<-c(obra.lines.v,"END")
 
-# Obtener la última posición (longitud) de novel.lines.v
-last.position.v<-length(novel.lines.v)
+# Obtener la última posición (longitud) de obra.lines.v
+last.position.v<-length(obra.lines.v)
 last.position.v
 
 # Agregar la posición de "END" al vector de posiciones de los capítulos (cap.posicion.v)
 cap.posicion.v<-c(cap.posicion.v,last.position.v)
 cap.posicion.v
 
-# Imprimir cada posición de los capítulos encontrados
+
 for (i in 1:length(cap.posicion.v)) {
-  print(cap.posicion.v[i])
-}
-
-for (i in 1:length(cap.posicion.v)){
-  print(paste("capitulo",i,"comienza en la posici?n",cap.posicion.v[i]),sep = "")
-  
-}
-capitulo.raws.l <- list()
-capitulo.freqs.l<- list()
-
-for (i in 1:length(cap.posicion.v)){
-  if (i != length(cap.posicion.v)){
-    capitulo.title <- novel.lines.v [cap.posicion.v[i]]
-    startc <- cap.posicion.v[i]+1
-    endc <- cap.posicion.v[i+1]-1
-    capitulo.lines.v <- novel.lines.v[startc:endc]
-    capitulo.words.v <- tolower(paste(capitulo.lines.v, collapse = ""))
-    capitulo.words.l <- strsplit(capitulo.words.v, "\\W")
-    capitulo.word.v <- unlist(capitulo.words.l)
-    capitulo.word.v <- capitulo.word.v [which(capitulo.word.v!="")]
-    capitulo.freqs.t<-table(capitulo.word.v)
-    capitulo.raws.l[[capitulo.title]]<- capitulo.freqs.t
-    capitulo.freqs.t.rel <- 100*(capitulo.freqs.t/sum(capitulo.freqs.t))
-    capitulo.freqs.l[[capitulo.title]]<-capitulo.freqs.t.rel
-  }
+  if (i != 14)
+    print(paste("capitulo", i, "comienza en la posición", cap.posicion.v[i]), sep = "")
   
 }
 
+# Imprimir cada posición de los capítulos encontrados junto con la línea del capítulo
 for (i in 1:length(cap.posicion.v)) {
-  print(paste("capitulo", i, "comienza en la posición", cap.posicion.v[i]), sep = "")
+ if (i != length(cap.posicion.v)) {
+   print(obra.lines.v[cap.posicion.v[i]])
+ }
 }
 
-# Create a function to extract paragraphs containing the word "conocer" from a capitulo
-extract_conocer_paragraphs <- function(capitulo_lines) {
-  conocer_paragraphs <- list()
-  current_paragraph <- ""
-  for (line in capitulo_lines) {
-    if (grepl("conocer", line, ignore.case = TRUE)) {
-      current_paragraph <- paste(current_paragraph, line, sep = "\n")
-    } else if (nzchar(current_paragraph)) {
-      conocer_paragraphs <- c(conocer_paragraphs, current_paragraph)
-      current_paragraph <- ""
-    }
-  }
-  conocer_paragraphs
+# Imprimir cada frase capturada entre los saltos de línea que contenga la palabra "conocer"
+cat("Frases que contienen la palabra 'conocer':\n")
+for (phrase in phrases) {
+ if (grepl("\\bconocer\\b", phrase, ignore.case = TRUE)) {
+   cat(phrase, "\n\n")
+ }
 }
 
-# Initialize a list to store the paragraphs containing "conocer" for each capitulo
-phrases <- list()
+# Crear un data frame con los datos impresos
+datos_impresos <- data.frame(
+  Capitulo = 1:length(cap.posicion.v),
+  Posicion = cap.posicion.v,
+  Linea = obra.lines.v[cap.posicion.v]
+)
 
-# Loop through each capitulo to find and store paragraphs containing "conocer"
-for (i in 1:length(cap.posicion.v)) {
-  if (i != length(cap.posicion.v)) {
-    capitulo.lines.v <- novel.lines.v[(cap.posicion.v[i] + 1):(cap.posicion.v[i + 1] - 1)]
-    conocer_paragraphs <- extract_conocer_paragraphs(capitulo.lines.v)
-    phrases[[i]] <- conocer_paragraphs
-  }
-}
+# Imprimir la tabla
+print(datos_impresos)
 
-# Print paragraphs containing "conocer" for each capitulo
-for (i in 1:length(phrases)) {
-  if (length(phrases[[i]]) > 0) {
-    cat(paste("capitulo", i, ":\n"))
-    for (phrase in phrases[[i]]) {
-      if (grepl("\\bconocer\\b", phrase, ignore.case = TRUE)) {
-        cat(phrase, "\n\n")
-      }
-  }
-  }
-}
+# Contar cuántas frases contienen cada palabra
+palabras <- c("conocer", "estrategia", "guerra", "combatir", "atacar", "preparativos")
+num_frases_por_palabra <- sapply(palabras, function(palabra) {
+  length(phrases[grepl(paste0("\\b", palabra, "\\b"), phrases, ignore.case = TRUE)])
+})
 
+# Crear un data frame para el gráfico
+datos_grafico <- data.frame(
+  Palabra = palabras,
+  Numero = num_frases_por_palabra
+)
+
+# Gráfico de barras con ggplot2
+ggplot(datos_grafico, aes(x = Palabra, y = Numero, fill = Palabra)) +
+  geom_bar(stat = "identity", color = "black") +
+  labs(x = NULL, y = "Número de frases", title = "Frases que contienen palabras clave") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Crear la nube de palabras
+wordcloud2(data = data.frame(word = names(table(strsplit(texto_completo, "\\s+"))),
+                             freq = as.numeric(table(strsplit(texto_completo, "\\s+")))),
+           color = "random-light",
+           backgroundColor = "black",
+           size = 1.5,
+           minRotation = -pi/4,
+           maxRotation = -pi/4)
