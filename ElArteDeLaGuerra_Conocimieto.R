@@ -107,6 +107,7 @@ library(wordcloud2)
     Palabra = palabras_claves,
     Numero = num_palabras
   )
+
   
   # Gráfico de barras con ggplot2
   ggplot(datos_grafico, aes(x = Palabra, y = Numero, fill = Palabra)) +
