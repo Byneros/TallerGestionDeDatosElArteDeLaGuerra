@@ -1,8 +1,6 @@
 # Carga las librerias necesarias 
 library(ggplot2)
 library(wordcloud2)
-library(stringr)
-
 ###################################################Frases###################################################  
   #Mirar cual es el folder de trabajo actual y asegurarse que en el est? el documento de la obra
   getwd()
@@ -37,11 +35,15 @@ library(stringr)
   # Combine todas las líneas de la novela en una sola línea sin separador
   obra.v <- paste(obra.lines.v, collapse = "")
   
+  # Convertir el texto de la obra a minúsculas
+  obra.v <- tolower(obra.v)
+  
   # Agregue saltos de línea después de cada punto en el texto de la novela
   obra.v <- gsub("\\.", ".\n", obra.v)
   
   # Divida el texto de la novela en frases usando saltos de línea como separador
-  phrases <- strsplit(novel.v, "\n")[[1]]
+  phrases <- strsplit(obra.v, "\n")[[1]]
+  phrases
   
   # Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en obra.lines.v
   cap.posicion.v <- grep("CAPITULO", obra.lines.v)
@@ -71,16 +73,39 @@ library(stringr)
   
 ######################################################################################################################### 
 ###################################################Diagrama de barras####################################################  
-  # Contar cuántas palabras contienen cada frase
-  palabras <- c("conocer", "estrategia", "guerra", "combatir", "atacar", "preparativos")
-  num_palabras_por_frase <- sapply(palabras, function(palabra) {
+  
+  num_palabras <- sapply(palabras_claves, function(palabra) {
     length(phrases[grepl(paste0("\\b", palabra, "\\b"), phrases, ignore.case = TRUE)])
   })
-  
+    # Contar cuántas palabras contienen cada frase
+  palabras_claves <- c("estrategia",
+                "guerra",
+                "conquista",
+                "conocer",
+                "táctica",
+                "liderazgo",
+                "planificación",
+                "adaptación",
+                "dominio",
+                "inteligencia",
+                "engaño",
+                "movimiento",
+                "control",
+                "observación",
+                "ocupación",
+                "flanqueo",
+                "ataque",
+                "defensa",
+                "disposición",
+                "confrontación",
+                "sabiduría"
+                )
+
+  num_palabras
   # Crear un data frame para el gráfico
   datos_grafico <- data.frame(
-    Palabra = palabras,
-    Numero = num_palabras_por_frase
+    Palabra = palabras_claves,
+    Numero = num_palabras
   )
   
   # Gráfico de barras con ggplot2
@@ -93,20 +118,121 @@ library(stringr)
   # Crear la nube de palabras
 
   # Unir todas las líneas del texto en una sola cadena
-  texto_completo <- paste(text.v, collapse = " ")
+  texto_completo <- paste(obra.v, collapse = " ")
   # Función para filtrar palabras y quedarnos solo con los verbos
   filtrar_verbos <- function(texto) {
     # Tokenizar el texto en palabras
     palabras <- strsplit(texto, "\\s+")[[1]]
     # Utilizar un diccionario de verbos en español (puedes ampliarlo según tus necesidades)
-    diccionario_verbos <- c("conocerte", "conoce", "conocer", "hablar", "correr", "jugar", "bailar", "pensar", "atacar")
+    diccionario_verbos <- c("abandonar",
+                            "adaptar",
+                            "aprovechar",
+                            "aprovecharse",
+                            "arrasar",
+                            "asaltar",
+                            "asediar",
+                            "atacar",
+                            "atormentar",
+                            "atropellar",
+                            "atrincherar",
+                            "avanzar",
+                            "alejar",
+                            "aliarse",
+                            "apoyar",
+                            "asignar",
+                            "capturar",
+                            "castigar",
+                            "ceder",
+                            "citar",
+                            "combatir",
+                            "comunicar",
+                            "concebir",
+                            "concentrar",
+                            "conducir",
+                            "confundir",
+                            "contradecir",
+                            "contrarrestar",
+                            "contratar",
+                            "controlar",
+                            "conocer",
+                            "conocerte",
+                            "cortejar",
+                            "cubrir",
+                            "decidir",
+                            "defender",
+                            "desarrollar",
+                            "desmoralizar",
+                            "desplegar",
+                            "despojar",
+                            "destruir",
+                            "desviar",
+                            "debilitar",
+                            "dominar",
+                            "emboscar",
+                            "emplear",
+                            "enfrentar",
+                            "entrenar",
+                            "esconder",
+                            "esperar",
+                            "escalar",
+                            "esquivar",
+                            "establecer",
+                            "estrangular",
+                            "evitar",
+                            "exiliar",
+                            "explotar",
+                            "extender",
+                            "extinguir",
+                            "fingir",
+                            "flanquear",
+                            "fomentar",
+                            "forzar",
+                            "fortalecer",
+                            "ganar",
+                            "herir",
+                            "impedir",
+                            "incorporar",
+                            "infiltrar",
+                            "inhibir",
+                            "inspirar",
+                            "interceptar",
+                            "interrogar",
+                            "investigar",
+                            "luchar",
+                            "mantener",
+                            "mover",
+                            "negar",
+                            "negociar",
+                            "observar",
+                            "ocupar",
+                            "perder",
+                            "perseguir",
+                            "planificar",
+                            "preparar",
+                            "prevenir",
+                            "provocar",
+                            "recuperar",
+                            "reclutar",
+                            "recompensar",
+                            "rendir",
+                            "resistir",
+                            "retirar",
+                            "retirarse",
+                            "reprimir",
+                            "sacrificar",
+                            "superar",
+                            "sorprender",
+                            "tender",
+                            "tormentar",
+                            "transitar"
+                            )
     # Filtrar las palabras que sean verbos
-    verbos <- palabras[palabras %in% diccionario_verbos]
-    return(paste(verbos, collapse = " "))
+    filtrar_verbos <- palabras[palabras %in% diccionario_verbos]
+    return(paste(filtrar_verbos, collapse = " "))
   }
   
   # Filtrar solo los verbos del texto
-  texto_verbos <- verbos(texto_completo)
+  texto_verbos <- filtrar_verbos(texto_completo)
   
   # Crear la nube de palabras con solo los verbos
   wordcloud2(data = data.frame(word = names(table(strsplit(texto_verbos, "\\s+"))),
