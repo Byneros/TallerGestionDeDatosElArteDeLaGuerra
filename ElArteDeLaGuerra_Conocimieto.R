@@ -240,6 +240,7 @@ library(wordcloud2)
              color = "random-light",
              backgroundColor = "black",
              size = 1.5,
+             #shape = wordcloud2(cicle)
              minRotation = -pi/4,
              maxRotation = -pi/4)
 ######################################################################################################################### 
