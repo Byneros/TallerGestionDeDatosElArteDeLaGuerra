@@ -5,127 +5,117 @@ library(wordcloud2)
 #Mirar cual es el folder de trabajo actual y asegurarse que en el est? el documento de la obra
 getwd()
 
-# Comprobar si el archivo de la obra está presente en el directorio
-nombre_archivo <- "nombre_del_archivo_de_la_obra.txt"  # Reemplaza esto con el nombre real del archivo de la obra
-
-archivos_en_directorio <- list.files()
-if (nombre_archivo %in% archivos_en_directorio) {
-  mensaje <- paste("El archivo", nombre_archivo, "se encuentra en el directorio.")
-} else {
-  mensaje <- paste("El archivo", nombre_archivo, "NO se encuentra en el directorio.")
-}
-print(mensaje)
-#Lee el texto desde el archivo "El Arte De La Guerra Sun Tzu.txt" y lo coloca en un vector
-text.v <- scan("El Arte De La Guerra Sun Tzu.txt", what="character", sep="\n")
-
-# Guarda la linea del texto en donde inicia la obra en start.v
-start.v <- which(text.v == "/CAPITULO I.")
-start.v
-
-# Guarda la linea del texto en donde finaliza la obra en end.v
-end.v <- which(text.v == "FIN")
-end.v
-
-start.metadata.v <- text.v[1:start.v -1]
-start.metadata.v
-
-# El metadato del final de la obra inicia en la l?nea (end.v+1) y finaliza en la ?ltima de la obra
-end.metadata.v <- text.v[(end.v+1):length(text.v)]
-end.metadata.v
-
-# Colocamos todo el metadato de la obra en la variable (metadata.v)
-metadata.v <- c(start.metadata.v, end.metadata.v)
-metadata.v
-
-# Ahora, las lineas de la novela son las que se encuentra entre la linea de inicio (start.v) y la de fin de la obra (end.v)
-# Colocaremos estas lineas en la variable (obra.lines.v)
-obra.lines.v <-  text.v[start.v:end.v]
-
-# Combine todas las líneas de la novela en una sola línea sin separador
-obra.v <- paste(obra.lines.v, collapse = "")
-
-# Agregue saltos de línea después de cada punto en el texto de la novela
-obra.v <- gsub("\\.", ".\n", obra.v)
-
-# Agregue saltos de línea después de cada Capitulo  en el texto de la novela
-obra.v <- gsub("\\.", ".\n", obra.v)
-
-# Divida el texto de la novela en frases usando saltos de línea como separador
-phrases <- strsplit(novel.v, "\n")[[1]]
-
-# Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en obra.lines.v
-cap.posicion.v <- grep("CAPITULO", obra.lines.v)
-cap.posicion.v
-
-# Extraer las líneas de obra.lines.v que contienen el patrón "CAPITULO \\d" usando las posiciones encontradas
-obra.lines.v[cap.posicion.v]
-
-# Agregar la etiqueta "END" al final de obra.lines.v
-obra.lines.v<-c(obra.lines.v,"END")
-
-# Obtener la última posición (longitud) de obra.lines.v
-last.position.v<-length(obra.lines.v)
-last.position.v
-
-# Agregar la posición de "END" al vector de posiciones de los capítulos (cap.posicion.v)
-cap.posicion.v<-c(cap.posicion.v,last.position.v)
-cap.posicion.v
-
-
-for (i in 1:length(cap.posicion.v)) {
-  if (i != 14)
-    print(paste("capitulo", i, "comienza en la posición", cap.posicion.v[i]), sep = "")
+  text.v <- scan("El Arte De La Guerra Sun Tzu.txt", what="character", sep="\n")
   
-}
+  # Guarda la linea del texto en donde inicia la obra en start.v
+  start.v <- which(text.v == "/CAPITULO I.")
+  start.v
+  
+  # Guarda la linea del texto en donde finaliza la obra en end.v
+  end.v <- which(text.v == "FIN")
+  end.v
+  
+  start.metadata.v <- text.v[1:start.v -1]
+  start.metadata.v
+  
+  # El metadato del final de la obra inicia en la l?nea (end.v+1) y finaliza en la ?ltima de la obra
+  end.metadata.v <- text.v[(end.v+1):length(text.v)]
+  end.metadata.v
+  
+  # Colocamos todo el metadato de la obra en la variable (metadata.v)
+  metadata.v <- c(start.metadata.v, end.metadata.v)
+  metadata.v
+  
+  # Ahora, las lineas de la novela son las que se encuentra entre la linea de inicio (start.v) y la de fin de la obra (end.v)
+  # Colocaremos estas lineas en la variable (obra.lines.v)
+  obra.lines.v <-  text.v[start.v:end.v]
+  
+  # Combine todas las líneas de la novela en una sola línea sin separador
+  obra.v <- paste(obra.lines.v, collapse = "")
+  
+  # Agregue saltos de línea después de cada punto en el texto de la novela
+  obra.v <- gsub("\\.", ".\n", obra.v)
+  
+  # Agregue saltos de línea después de cada Capitulo  en el texto de la novela
+  obra.v <- gsub("\\.", ".\n", obra.v)
+  
+  # Divida el texto de la novela en frases usando saltos de línea como separador
+  phrases <- strsplit(novel.v, "\n")[[1]]
+  
+  # Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en obra.lines.v
+  cap.posicion.v <- grep("CAPITULO", obra.lines.v)
+  #cap.posicion.v
+  
+  # Extraer las líneas de obra.lines.v que contienen el patrón "CAPITULO \\d" usando las posiciones encontradas
+  #obra.lines.v[cap.posicion.v]
+  
+  # Agregar la etiqueta "END" al final de obra.lines.v
+  #obra.lines.v<-c(obra.lines.v,"END")
+  
+  # Obtener la última posición (longitud) de obra.lines.v
+  last.position.v<-length(obra.lines.v)
+  last.position.v
+  
+  # Agregar la posición de "END" al vector de posiciones de los capítulos (cap.posicion.v)
+  #cap.posicion.v<-c(cap.posicion.v,last.position.v)
+  #cap.posicion.v
+  
+  
+  #for (i in 1:length(cap.posicion.v)) {
+  #  if (i != 14)
+  #   print(paste("capitulo", i, "comienza en la posición", cap.posicion.v[i]), sep = "")
+  # 
+  #}
+  
+  # Imprimir cada posición de los capítulos encontrados junto con la línea del capítulo
+  #for (i in 1:length(cap.posicion.v)) {
+  # if (i != length(cap.posicion.v)) {
+  #   print(obra.lines.v[cap.posicion.v[i]])
+  # }
+  #}
+  
+  # Imprimir cada frase capturada entre los saltos de línea que contenga la palabra "conocer"
+  cat("Frases que contienen la palabra 'conocer':\n")
+  for (phrase in phrases) {
+    if (grepl("\\bconocer\\b", phrase, ignore.case = TRUE)) {
+      cat(phrase, "\n\n")
+    }
+  }
+  
+  # Crear un data frame con los datos impresos
+  datos_impresos <- data.frame(
+    Capitulo = 1:length(cap.posicion.v),
+    Posicion = cap.posicion.v,
+    Linea = obra.lines.v[cap.posicion.v]
+  )
+  
+  # Imprimir la tabla
+  print(datos_impresos)
+  
+  # Contar cuántas frases contienen cada palabra
+  palabras <- c("conocer", "estrategia", "guerra", "combatir", "atacar", "preparativos")
+  num_frases_por_palabra <- sapply(palabras, function(palabra) {
+    length(phrases[grepl(paste0("\\b", palabra, "\\b"), phrases, ignore.case = TRUE)])
+  })
+  
+  # Crear un data frame para el gráfico
+  datos_grafico <- data.frame(
+    Palabra = palabras,
+    Numero = num_frases_por_palabra
+  )
+  
+  # Gráfico de barras con ggplot2
+  ggplot(datos_grafico, aes(x = Palabra, y = Numero, fill = Palabra)) +
+    geom_bar(stat = "identity", color = "black") +
+    labs(x = NULL, y = "Número de frases", title = "Frases que contienen palabras clave") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  # Crear la nube de palabras
+  wordcloud2(data = data.frame(word = names(table(strsplit(texto_completo, "\\s+"))),
+                               freq = as.numeric(table(strsplit(texto_completo, "\\s+")))),
+             color = "random-light",
+             backgroundColor = "black",
+             size = 1.5,
+             minRotation = -pi/4,
+             maxRotation = -pi/4)
 
-# Imprimir cada posición de los capítulos encontrados junto con la línea del capítulo
-for (i in 1:length(cap.posicion.v)) {
- if (i != length(cap.posicion.v)) {
-   print(obra.lines.v[cap.posicion.v[i]])
- }
-}
-
-# Imprimir cada frase capturada entre los saltos de línea que contenga la palabra "conocer"
-cat("Frases que contienen la palabra 'conocer':\n")
-for (phrase in phrases) {
- if (grepl("\\bconocer\\b", phrase, ignore.case = TRUE)) {
-   cat(phrase, "\n\n")
- }
-}
-
-# Crear un data frame con los datos impresos
-datos_impresos <- data.frame(
-  Capitulo = 1:length(cap.posicion.v),
-  Posicion = cap.posicion.v,
-  Linea = obra.lines.v[cap.posicion.v]
-)
-
-# Imprimir la tabla
-print(datos_impresos)
-
-# Contar cuántas frases contienen cada palabra
-palabras <- c("conocer", "estrategia", "guerra", "combatir", "atacar", "preparativos")
-num_frases_por_palabra <- sapply(palabras, function(palabra) {
-  length(phrases[grepl(paste0("\\b", palabra, "\\b"), phrases, ignore.case = TRUE)])
-})
-
-# Crear un data frame para el gráfico
-datos_grafico <- data.frame(
-  Palabra = palabras,
-  Numero = num_frases_por_palabra
-)
-
-# Gráfico de barras con ggplot2
-ggplot(datos_grafico, aes(x = Palabra, y = Numero, fill = Palabra)) +
-  geom_bar(stat = "identity", color = "black") +
-  labs(x = NULL, y = "Número de frases", title = "Frases que contienen palabras clave") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# Crear la nube de palabras
-wordcloud2(data = data.frame(word = names(table(strsplit(texto_completo, "\\s+"))),
-                             freq = as.numeric(table(strsplit(texto_completo, "\\s+")))),
-           color = "random-light",
-           backgroundColor = "black",
-           size = 1.5,
-           minRotation = -pi/4,
-           maxRotation = -pi/4)
