@@ -124,7 +124,7 @@ library(wordcloud2)
     # Tokenizar el texto en palabras
     palabras <- strsplit(texto, "\\s+")[[1]]
     # Utilizar un diccionario de verbos en español (puedes ampliarlo según tus necesidades)
-    diccionario_verbo <- c("abandonar",
+    diccionario_verbos <- c("abandonar",
                             "adaptar",
                             "aprovechar",
                             "aprovecharse",
