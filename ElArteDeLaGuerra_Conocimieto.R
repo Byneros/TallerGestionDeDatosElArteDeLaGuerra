@@ -88,12 +88,6 @@ contar_palabra <- function(texto, palabra) {
     Posicion = cap.posicion.v,
     Linea = obra.lines.v[cap.posicion.v]
   )
-  
-  # Imprimir la tabla
-  print(datos_impresos)
-  
-
-
 ######################################################################################################################### 
 ###################################################Diagrama de barras####################################################  
 # Lista de palabras clave
@@ -183,7 +177,9 @@ ui <- dashboardPage(
       menuItem("Frases que contienen 'conocer'", tabName = "frases", icon = icon("book")),
       menuItem("Tabla de Capítulos", tabName = "capitulos", icon = icon("list-ol")),
       menuItem("Diagrama de Barras", tabName = "barras", icon = icon("bar-chart")),
-      menuItem("Nube de Verbos", tabName = "nube", icon = icon("cloud"))
+      menuItem("Nube de Verbos", tabName = "nube", icon = icon("cloud")),
+      menuItem("Widgets", tabName = "widgets", icon = icon("th")),
+      menuItem("Integrantes", tabName = "members", icon = icon(""))
     )
   ),
   dashboardBody(
@@ -213,6 +209,10 @@ ui <- dashboardPage(
       ),
       tabItem(tabName = "widgets",
               h2("Widgets tab content")
+      ),
+      tabItem(tabName = "members",
+              h2("Nelson Julio Martinez"),
+              h2("Luis Felipe Guazo")
       )
     )
   )
