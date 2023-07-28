@@ -50,6 +50,10 @@ phrases <- strsplit(obra.v, "\n")[[1]]
 # Obtener la última posición (longitud) de obra.lines.v
 last.position.v<-length(obra.lines.v)
 last.position.v
+
+# Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en obra.lines.v
+cap.posicion.v <- grep("CAPITULO", obra.lines.v)
+
 # Función para dividir la obra por capítulo
 dividir_por_capitulo <- function(texto, posicion_capitulos) {
   capitulos <- list()
@@ -70,11 +74,25 @@ contar_palabra <- function(texto, palabra) {
 }
 
 # Crear un data frame con la frecuencia de las palabras "arte" y "guerra" en cada capítulo
-frecuencia_por_capitulo <- data.frame(
+  frecuencia_por_capitulo <- data.frame(
   Capitulo = 1:length(capitulos),
   Frecuencia_Arte = sapply(capitulos, function(cap) contar_palabra(cap, "arte")),
   Frecuencia_Guerra = sapply(capitulos, function(cap) contar_palabra(cap, "guerra"))
 )
+  
+######################################################################################################################## 
+###################################################Tabla de capitulos################################################### 
+  # Crear un data frame con los datos impresos
+  datos_impresos <- data.frame(
+    Capitulo = 1:length(cap.posicion.v),
+    Posicion = cap.posicion.v,
+    Linea = obra.lines.v[cap.posicion.v]
+  )
+  
+  # Imprimir la tabla
+  print(datos_impresos)
+  
+
 
 ######################################################################################################################### 
 ###################################################Diagrama de barras####################################################  
@@ -100,6 +118,25 @@ palabras_claves <- c("estrategia",
                      "disposición",
                      "confrontación",
                      "sabiduría")
+
+# Función para contar el número de frases que contienen una palabra clave
+contar_frases_palabra <- function(palabra) {
+  sum(grepl(paste0("\\b", palabra, "\\b"), phrases, ignore.case = TRUE))
+}
+
+# Contar cuántas palabras contienen cada frase
+num_palabras <- sapply(palabras_claves, contar_frases_palabra)
+
+# Crear un data frame para el gráfico
+datos_grafico <- data.frame(
+  Palabra = palabras_claves,
+  Numero = num_palabras
+)
+
+######################################################################################################################### 
+###################################################Diagrama de barras####################################################  
+# Lista de palabras clave
+palabras_claves <- c("estrategia", "guerra", "conquista", "conocer", "táctica", "liderazgo", "planificación", "adaptación", "dominio", "inteligencia", "engaño", "movimiento", "control", "observación", "ocupación", "flanqueo", "ataque", "defensa", "disposición", "confrontación", "sabiduría")
 
 # Función para contar el número de frases que contienen una palabra clave
 contar_frases_palabra <- function(palabra) {
@@ -156,7 +193,7 @@ ui <- dashboardPage(
                 verbatimTextOutput("frases_output")
               )
       ),
-      tabItem(tabName = "capitulos",
+       tabItem(tabName = "capitulos",
               dataTableOutput("capitulos_table")
       ),
       
@@ -223,3 +260,4 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
+
