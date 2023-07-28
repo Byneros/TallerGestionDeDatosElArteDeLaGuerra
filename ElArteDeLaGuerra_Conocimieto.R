@@ -46,15 +46,10 @@ obra.v <- gsub("\\.", ".\n", obra.v)
 
 # Divida el texto de la novela en frases usando saltos de línea como separador
 phrases <- strsplit(obra.v, "\n")[[1]]
-phrases
-
-# Encontrar las posiciones donde aparece el patrón "CAPITULO \\d" (donde \\d representa un dígito) en obra.lines.v
-cap.posicion.v <- grep("CAPITULO", obra.lines.v)
 
 # Obtener la última posición (longitud) de obra.lines.v
 last.position.v<-length(obra.lines.v)
 last.position.v
-
 # Función para dividir la obra por capítulo
 dividir_por_capitulo <- function(texto, posicion_capitulos) {
   capitulos <- list()
@@ -80,30 +75,6 @@ frecuencia_por_capitulo <- data.frame(
   Frecuencia_Arte = sapply(capitulos, function(cap) contar_palabra(cap, "arte")),
   Frecuencia_Guerra = sapply(capitulos, function(cap) contar_palabra(cap, "guerra"))
 )
-
-# Imprimir la tabla de frecuencia por capítulo
-print(frecuencia_por_capitulo)
-
-# Crear el gráfico de barras
-ggplot(frecuencia_por_capitulo, aes(x = Capitulo, y = Frecuencia_Arte, fill = "Arte")) +
-  geom_bar(stat = "identity", position = "dodge", color = "black") +
-  geom_bar(aes(x = Capitulo, y = Frecuencia_Guerra, fill = "Guerra"), stat = "identity", position = "dodge", color = "black") +
-  labs(x = "Capítulo", y = "Frecuencia", title = "Frecuencia de 'arte' y 'guerra' por capítulo") +
-  scale_fill_manual(values = c("Arte" = "blue", "Guerra" = "red")) +
-  theme_minimal()
-
-
-# Imprimir cada frase capturada entre los saltos de línea que contenga la palabra "conocer"
-#  cat("Frases que contienen la palabra 'conocer':\n")
-#  for (phrase in phrases) {
-#    if (grepl("\\bconocer\\b", phrase, ignore.case = TRUE)) {
-#      cat(phrase, "\n\n")
-#    }
-#  }
-
-######################################################################################################################## 
-###################################################Tabla de capitulos################################################### 
-# ... (Código para crear una tabla de capítulos que has proporcionado)
 
 ######################################################################################################################### 
 ###################################################Diagrama de barras####################################################  
@@ -150,113 +121,14 @@ datos_grafico <- data.frame(
 
 # Unir todas las líneas del texto en una sola cadena
 texto_completo <- paste(obra.v, collapse = " ")
+
 # Función para filtrar palabras y quedarnos solo con los verbos
 filtrar_verbos <- function(texto) {
   # Tokenizar el texto en palabras
   palabras <- strsplit(texto, "\\s+")[[1]]
   # Utilizar un diccionario de verbos en español (puedes ampliarlo según tus necesidades)
-  diccionario_verbos <- c("abandonar",
-                          "adaptar",
-                          "aprovechar",
-                          "aprovecharse",
-                          "arrasar",
-                          "asaltar",
-                          "asediar",
-                          "atacar",
-                          "atormentar",
-                          "atropellar",
-                          "atrincherar",
-                          "avanzar",
-                          "alejar",
-                          "aliarse",
-                          "apoyar",
-                          "asignar",
-                          "capturar",
-                          "castigar",
-                          "ceder",
-                          "citar",
-                          "combatir",
-                          "comunicar",
-                          "concebir",
-                          "concentrar",
-                          "conducir",
-                          "confundir",
-                          "contradecir",
-                          "contrarrestar",
-                          "contratar",
-                          "controlar",
-                          "conocer",
-                          "conocerte",
-                          "cortejar",
-                          "cubrir",
-                          "decidir",
-                          "defender",
-                          "desarrollar",
-                          "desmoralizar",
-                          "desplegar",
-                          "despojar",
-                          "destruir",
-                          "desviar",
-                          "debilitar",
-                          "dominar",
-                          "emboscar",
-                          "emplear",
-                          "enfrentar",
-                          "entrenar",
-                          "esconder",
-                          "esperar",
-                          "escalar",
-                          "esquivar",
-                          "establecer",
-                          "estrangular",
-                          "evitar",
-                          "exiliar",
-                          "explotar",
-                          "extender",
-                          "extinguir",
-                          "fingir",
-                          "flanquear",
-                          "fomentar",
-                          "forzar",
-                          "fortalecer",
-                          "ganar",
-                          "herir",
-                          "impedir",
-                          "incorporar",
-                          "infiltrar",
-                          "inhibir",
-                          "inspirar",
-                          "interceptar",
-                          "interrogar",
-                          "investigar",
-                          "luchar",
-                          "mantener",
-                          "mover",
-                          "negar",
-                          "negociar",
-                          "observar",
-                          "ocupar",
-                          "perder",
-                          "perseguir",
-                          "planificar",
-                          "preparar",
-                          "prevenir",
-                          "provocar",
-                          "recuperar",
-                          "reclutar",
-                          "recompensar",
-                          "rendir",
-                          "resistir",
-                          "retirar",
-                          "retirarse",
-                          "reprimir",
-                          "sacrificar",
-                          "superar",
-                          "sorprender",
-                          "tender",
-                          "tormentar",
-                          "transitar"
-  )
+  diccionario_verbos <- c("abandonar", "adaptar", "aprovechar", "aprovecharse", "arrasar", "asaltar", "asediar", "atacar", "atormentar", "atropellar", "atrincherar", "avanzar", "alejar", "aliarse", "apoyar", "asignar", "capturar", "castigar", "ceder", "citar", "combatir", "comunicar", "concebir", "concentrar", "conducir", "confundir", "contradecir", "contrarrestar", "contratar", "controlar", "conocer", "conocerte", "cortejar", "cubrir", "decidir", "defender", "desarrollar", "desmoralizar", "desplegar", "despojar", "destruir", "desviar", "debilitar", "dominar", "emboscar", "emplear", "enfrentar", "entrenar", "esconder", "esperar", "escalar", "esquivar", "establecer", "estrangular", "evitar", "exiliar", "explotar", "extender", "extinguir", "fingir", "flanquear", "fomentar", "forzar", "fortalecer", "ganar", "herir", "impedir", "incorporar", "infiltrar", "inhibir", "inspirar", "interceptar", "interrogar", "investigar", "luchar", "mantener", "mover", "negar", "negociar", "observar", "ocupar", "perder", "perseguir", "planificar", "preparar", "prevenir", "provocar", "recuperar", "reclutar", "recompensar", "rendir", "resistir", "retirar", "retirarse", "reprimir", "sacrificar", "superar", "sorprender", "tender", "tormentar", "transitar")
+  
   # Filtrar las palabras que sean verbos
   filtrar_verbos <- palabras[palabras %in% diccionario_verbos]
   return(paste(filtrar_verbos, collapse = " "))
@@ -265,18 +137,7 @@ filtrar_verbos <- function(texto) {
 # Filtrar solo los verbos del texto
 texto_verbos <- filtrar_verbos(texto_completo)
 
-# Crear la nube de palabras con solo los verbos
-wordcloud2(data = data.frame(word = names(table(strsplit(texto_verbos, "\\s+"))),
-                             freq = as.numeric(table(strsplit(texto_verbos, "\\s+")))),
-           color = "random-light",
-           backgroundColor = "black",
-           size = 1.5,
-           #shape = wordcloud2(cicle)
-           minRotation = -pi/4,
-           maxRotation = -pi/4)
-
 ##########################################Dashboard######################################################### 
-
 # Crea el dashboard con las visualizaciones
 ui <- dashboardPage(
   dashboardHeader(title = "Dashboard de El Arte De La Guerra"),
@@ -298,9 +159,18 @@ ui <- dashboardPage(
       tabItem(tabName = "capitulos",
               dataTableOutput("capitulos_table")
       ),
+      
       tabItem(tabName = "barras",
-              plotOutput("barras_plot")
+              fluidRow(
+                column(width = 6,
+                       plotOutput("plot1", height = 250)
+                ),
+                column(width = 6,
+                       plotOutput("plot2", height = 250)
+                )
+              )
       ),
+      
       tabItem(tabName = "nube",
               wordcloud2Output("nube_palabras")
       ),
@@ -310,6 +180,7 @@ ui <- dashboardPage(
     )
   )
 )
+
 
 server <- function(input, output) {
   # Frases que contienen "conocer"
@@ -324,7 +195,15 @@ server <- function(input, output) {
   })
   
   # Diagrama de barras
-  output$barras_plot <- renderPlot({
+  output$plot1 <- renderPlot({
+    ggplot(frecuencia_por_capitulo, aes(x = Capitulo, y = Frecuencia_Arte, fill = "Arte")) +
+      geom_bar(stat = "identity", position = "dodge", color = "black") +
+      geom_bar(aes(x = Capitulo, y = Frecuencia_Guerra, fill = "Guerra"), stat = "identity", position = "dodge", color = "black") +
+      labs(x = "Capítulo", y = "Frecuencia", title = "Frecuencia de 'arte' y 'guerra' por capítulo") +
+      scale_fill_manual(values = c("Arte" = "blue", "Guerra" = "red")) +
+      theme_minimal()
+  })
+  output$plot2 <- renderPlot({
     ggplot(datos_grafico, aes(x = Palabra, y = Numero, fill = Palabra)) +
       geom_bar(stat = "identity", color = "black") +
       labs(x = NULL, y = "Número de frases", title = "Frases que contienen palabras clave") +
@@ -344,6 +223,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
-
-
-  
