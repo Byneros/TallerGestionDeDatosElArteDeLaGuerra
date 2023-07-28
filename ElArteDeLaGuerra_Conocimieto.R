@@ -55,6 +55,44 @@ cap.posicion.v <- grep("CAPITULO", obra.lines.v)
 last.position.v<-length(obra.lines.v)
 last.position.v
 
+# Función para dividir la obra por capítulo
+dividir_por_capitulo <- function(texto, posicion_capitulos) {
+  capitulos <- list()
+  for (i in 1:(length(posicion_capitulos)-1)) {
+    capitulos[[i]] <- texto[posicion_capitulos[i]:posicion_capitulos[i+1]]
+  }
+  capitulos[[length(posicion_capitulos)]] <- texto[posicion_capitulos[length(posicion_capitulos)]:length(texto)]
+  return(capitulos)
+}
+
+# Dividir la obra por capítulo
+capitulos <- dividir_por_capitulo(text.v, cap.posicion.v)
+
+# Función para contar la frecuencia de una palabra en un texto
+contar_palabra <- function(texto, palabra) {
+  frecuencia <- length(grep(palabra, texto, ignore.case = TRUE))
+  return(frecuencia)
+}
+
+# Crear un data frame con la frecuencia de las palabras "arte" y "guerra" en cada capítulo
+frecuencia_por_capitulo <- data.frame(
+  Capitulo = 1:length(capitulos),
+  Frecuencia_Arte = sapply(capitulos, function(cap) contar_palabra(cap, "arte")),
+  Frecuencia_Guerra = sapply(capitulos, function(cap) contar_palabra(cap, "guerra"))
+)
+
+# Imprimir la tabla de frecuencia por capítulo
+print(frecuencia_por_capitulo)
+
+# Crear el gráfico de barras
+ggplot(frecuencia_por_capitulo, aes(x = Capitulo, y = Frecuencia_Arte, fill = "Arte")) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_bar(aes(x = Capitulo, y = Frecuencia_Guerra, fill = "Guerra"), stat = "identity", position = "dodge", color = "black") +
+  labs(x = "Capítulo", y = "Frecuencia", title = "Frecuencia de 'arte' y 'guerra' por capítulo") +
+  scale_fill_manual(values = c("Arte" = "blue", "Guerra" = "red")) +
+  theme_minimal()
+
+
 # Imprimir cada frase capturada entre los saltos de línea que contenga la palabra "conocer"
 #  cat("Frases que contienen la palabra 'conocer':\n")
 #  for (phrase in phrases) {
